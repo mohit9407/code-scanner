@@ -5,5 +5,4 @@ export const fontFamilies = {
     medium: 'HuninnRegular',
     bold: 'HuninnRegular',
   },
-  // Adjust the above code to fit your chosen fonts' names
 };
