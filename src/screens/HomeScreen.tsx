@@ -1,4 +1,11 @@
-import React, { use, useCallback, useEffect, useState } from 'react';
+import React, {
+  use,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
+import Icon from '@react-native-vector-icons/fontawesome6';
 import {
   View,
   Text,
@@ -7,6 +14,7 @@ import {
   Image,
   Alert,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Camera,
@@ -17,6 +25,7 @@ import {
 } from 'react-native-vision-camera';
 import AppButton from '../components/AppButton';
 import { saveScanToHistory } from '../utils/storage';
+import AppHeader from '../components/AppHeader';
 
 const HomeScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -79,90 +88,106 @@ const HomeScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
     return <Text>Camera not available...</Text>;
   }
 
-  return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#EDF2F4" />
-      <View style={styles.header}>
-        <Image
-          source={require('../assets/images/qr-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>ScannerQRBarcode</Text>
-      </View>
-      <Text style={styles.subtitle}>
-        Welcome! Start scanning QR codes or barcodes using your camera.
-      </Text>
-      {isCameraActive ? (
-        <View style={styles.cameraContainer}>
-          <Camera
-            style={styles.camera}
-            device={device}
-            isActive={isCameraActive}
-            codeScanner={codeScanner}
-          />
-        </View>
-      ) : (
-        <>
-          <AppButton
-            title={scannedData ? 'Restart Scan' : 'Start Scan'}
-            onPress={handleStartScan}
-            variant="contained"
-            style={styles.scanButton}
-          />
-          {scannedData && (
-            <View style={styles.infoBox}>
-              <Text style={styles.infoText}>
-                Last scanned code: {scannedData}
-              </Text>
-            </View>
-          )}
-        </>
-      )}
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Settings')}
+          style={{ marginRight: 16 }}
+        >
+          <Icon name="gear" color="#2B2D42" iconStyle="solid" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
-      <Modal
-        visible={showModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Scanned!</Text>
-            <Text style={styles.modalText}>{scannedData}</Text>
-            <View style={styles.modalButtonRow}>
-              <AppButton
-                title="OK"
-                onPress={async () => {
-                  await saveScanToHistory({
-                    data: scannedData ?? '',
-                    scannedAt: new Date().toISOString(),
-                    type: scannedDataType ?? '',
-                  });
-                  navigation.navigate('ScanList', { lastScan: scannedData });
-                  setShowModal(false);
-                }}
-                variant="contained"
-                style={styles.modalButton}
-                textStyle={styles.modalButtonText}
-              />
-              <AppButton
-                title="Cancel"
-                onPress={() => {
-                  setShowModal(false);
-                  setScannedData(null);
-                }}
-                variant="outlined"
-                style={[styles.modalButton, styles.modalButtonOutlined]}
-                textStyle={styles.modalButtonTextOutlined}
-              />
+  return (
+    <>
+      <AppHeader title="Home" showSettings={true} />
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#EDF2F4" />
+        <View style={styles.header}>
+          <Image
+            source={require('../assets/images/qr-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>ScannerQRBarcode</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          Welcome! Start scanning QR codes or barcodes using your camera.
+        </Text>
+        {isCameraActive ? (
+          <View style={styles.cameraContainer}>
+            <Camera
+              style={styles.camera}
+              device={device}
+              isActive={isCameraActive}
+              codeScanner={codeScanner}
+            />
+          </View>
+        ) : (
+          <>
+            <AppButton
+              title={scannedData ? 'Restart Scan' : 'Start Scan'}
+              onPress={handleStartScan}
+              variant="contained"
+              style={styles.scanButton}
+            />
+            {scannedData && (
+              <View style={styles.infoBox}>
+                <Text style={styles.infoText}>
+                  Last scanned code: {scannedData}
+                </Text>
+              </View>
+            )}
+          </>
+        )}
+
+        <Modal
+          visible={showModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Scanned!</Text>
+              <Text style={styles.modalText}>{scannedData}</Text>
+              <View style={styles.modalButtonRow}>
+                <AppButton
+                  title="OK"
+                  onPress={async () => {
+                    await saveScanToHistory({
+                      data: scannedData ?? '',
+                      scannedAt: new Date().toISOString(),
+                      type: scannedDataType ?? '',
+                    });
+                    navigation.navigate('ScanList', { lastScan: scannedData });
+                    setShowModal(false);
+                  }}
+                  variant="contained"
+                  style={styles.modalButton}
+                  textStyle={styles.modalButtonText}
+                />
+                <AppButton
+                  title="Cancel"
+                  onPress={() => {
+                    setShowModal(false);
+                    setScannedData(null);
+                  }}
+                  variant="outlined"
+                  style={[styles.modalButton, styles.modalButtonOutlined]}
+                  textStyle={styles.modalButtonTextOutlined}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <Text style={styles.footer}>Powered by YourCompany</Text>
-    </View>
+        <Text style={styles.footer}>Powered by YourCompany</Text>
+      </View>
+    </>
   );
 };
 
@@ -171,7 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EDF2F4',
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 16,
     paddingHorizontal: 24,
   },
   header: {
