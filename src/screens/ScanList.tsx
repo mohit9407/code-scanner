@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Icon from '@react-native-vector-icons/fontawesome6';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import AppHeader from '../components/AppHeader';
 
 const ScanList: React.FC = () => {
   const route = useRoute();
@@ -49,32 +50,35 @@ const ScanList: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Last Scanned Data:</Text>
-      <Text style={styles.data}>{lastScan}</Text>
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.iconButton} onPress={handleShare}>
-          <Icon name="share" size={22} color="#2B2D42" iconStyle="solid" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={handleCopy}>
-          <Icon name="copy" size={22} color="#2B2D42" iconStyle="solid" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={handleOpenInBrowser}
-        >
-          <Icon name="globe" size={22} color="#2B2D42" iconStyle="solid" />
-        </TouchableOpacity>
+    <>
+      <AppHeader title="Scanned" showSettings={true} />
+      <View style={styles.container}>
+        <Text style={styles.label}>Last Scanned Data:</Text>
+        <Text style={styles.data}>{lastScan}</Text>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.iconButton} onPress={handleShare}>
+            <Icon name="share" size={22} color="#2B2D42" iconStyle="solid" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleCopy}>
+            <Icon name="copy" size={22} color="#2B2D42" iconStyle="solid" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={handleOpenInBrowser}
+          >
+            <Icon name="globe" size={22} color="#2B2D42" iconStyle="solid" />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.historyButton}
+            onPress={handleGoToHistory}
+          >
+            <Text style={styles.historyButtonText}>View Scan History</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View>
-        <TouchableOpacity
-          style={styles.historyButton}
-          onPress={handleGoToHistory}
-        >
-          <Text style={styles.historyButtonText}>View Scan History</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </>
   );
 };
 

@@ -11,6 +11,7 @@ import Icon from '@react-native-vector-icons/fontawesome6';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { getScanHistory, ScanHistoryItem } from '../utils/storage';
 import { formatDate } from '../utils';
+import AppHeader from '../components/AppHeader';
 
 const HistoryList: React.FC = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -50,23 +51,25 @@ const HistoryList: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Scan History</Text>
-      <FlatList
-        data={history}
-        keyExtractor={(item, idx) => `${item.data}-${item.scannedAt}-${idx}`}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={
-          <Text
-            style={{ color: '#8D99AE', textAlign: 'center', marginTop: 40 }}
-          >
-            No scan history found.
-          </Text>
-        }
-      />
-    </View>
+    <>
+      <AppHeader title="History" showSettings={true} />
+      <View style={styles.container}>
+        <FlatList
+          data={history}
+          keyExtractor={(item, idx) => `${item.data}-${item.scannedAt}-${idx}`}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            <Text
+              style={{ color: '#8D99AE', textAlign: 'center', marginTop: 40 }}
+            >
+              No scan history found.
+            </Text>
+          }
+        />
+      </View>
+    </>
   );
 };
 
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EDF2F4',
-    paddingTop: 40,
+    paddingTop: 12,
     paddingHorizontal: 12,
   },
   title: {

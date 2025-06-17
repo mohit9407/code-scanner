@@ -11,6 +11,7 @@ import {
 // import Clipboard from '@react-native-clipboard/clipboard';
 import Icon from '@react-native-vector-icons/fontawesome6';
 import { useRoute } from '@react-navigation/native';
+import AppHeader from '../components/AppHeader';
 
 const HistoryDetail: React.FC = () => {
   const route = useRoute();
@@ -40,25 +41,28 @@ const HistoryDetail: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Scanned Data:</Text>
-      <Text style={styles.data}>{lastScan}</Text>
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.iconButton} onPress={handleShare}>
-          <Icon name="share" size={22} color="#2B2D42" iconStyle='solid' />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={handleCopy}>
-          <Icon name="copy" size={22} color="#2B2D42" iconStyle='solid' />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={handleOpenInBrowser}
-        >
-          <Icon name="globe" size={22} color="#2B2D42" iconStyle='solid' />
-        </TouchableOpacity>
+    <>
+      <AppHeader title="Scan Detail" showSettings={true} />
+      <View style={styles.container}>
+        <Text style={styles.label}>Scanned Data:</Text>
+        <Text style={styles.data}>{lastScan}</Text>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.iconButton} onPress={handleShare}>
+            <Icon name="share" size={22} color="#2B2D42" iconStyle="solid" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleCopy}>
+            <Icon name="copy" size={22} color="#2B2D42" iconStyle="solid" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={handleOpenInBrowser}
+          >
+            <Icon name="globe" size={22} color="#2B2D42" iconStyle="solid" />
+          </TouchableOpacity>
+        </View>
+        {/* No "View Scan History" button here */}
       </View>
-      {/* No "View Scan History" button here */}
-    </View>
+    </>
   );
 };
 
