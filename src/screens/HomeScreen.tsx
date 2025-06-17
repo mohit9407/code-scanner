@@ -16,10 +16,12 @@ import {
   useCodeScanner,
 } from 'react-native-vision-camera';
 import AppButton from '../components/AppButton';
+import { saveScanToHistory } from '../utils/storage';
 
 const HomeScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const { hasPermission, requestPermission } = useCameraPermission();
   const [scannedData, setScannedData] = useState<string | null>(null);
+  const [scannedDataType, setScannedDataType] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const device = useCameraDevice('back');
@@ -43,6 +45,7 @@ const HomeScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
       if (codes.length > 0 && isCameraActive) {
         setIsCameraActive(false); // Pause scanning
         setScannedData(codes[0].value ?? '');
+        setScannedDataType(codes[0].type ?? '');
         setShowModal(true); // Show modal with scanned data
       }
     },
@@ -130,9 +133,14 @@ const HomeScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
             <View style={styles.modalButtonRow}>
               <AppButton
                 title="OK"
-                onPress={() => {
+                onPress={async () => {
+                  await saveScanToHistory({
+                    data: scannedData ?? '',
+                    scannedAt: new Date().toISOString(),
+                    type: scannedDataType ?? '',
+                  });
                   navigation.navigate('ScanList', { lastScan: scannedData });
-                  setShowModal(false)
+                  setShowModal(false);
                 }}
                 variant="contained"
                 style={styles.modalButton}
